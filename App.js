@@ -1,8 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, Button, AsyncStorage } from 'react-native';
 
+// custom components
+import ListItem from './src/Components/ListItem/ListItem'
+
 export default class App extends React.Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -49,26 +52,13 @@ export default class App extends React.Component {
   render() {
     const todoList = this.state.todoList.map((item, index) => {
       return !item.done ?
-              <View key={index} style={styles.listItem}>
-                <Text>> {item.value}</Text>
-                <Button
-                  onPress={() => this.onDoneTodo(item,index)}
-                  title="Done?"
-                />
-              </View>
+              <ListItem key={index} item={item} index={index} onDoneTodo={this.onDoneTodo.bind(this)} type="todo"/>
           : false;
     });
 
     const doneList = this.state.todoList.map((item, index) => {
       return item.done ?
-              <View key={index} style={styles.listItem}>
-                <Text >> {item.value}</Text>
-                <Button
-                  onPress={() => this.onRedoTodo(item,index)}
-                  title="Redo?"
-                  color="#841584"
-                />
-              </View>
+              <ListItem key={index} item={item} index={index} onRedoTodo={this.onRedoTodo.bind(this)} type="done"/>
         : false;
     });
 
@@ -110,7 +100,7 @@ export default class App extends React.Component {
     );
   }
 
-  onRedoTodo = (item, index) => {
+  onRedoTodo(item, index) {
     let todoList = this.state.todoList;
     todoList[index] = {...item, done:false}
     this.setState({
@@ -122,7 +112,7 @@ export default class App extends React.Component {
   } 
 
   onAddTodo = () => {
-    if(this.state.todoList) {
+    if(this.state.text) {
       this.setState({
         ...this.state,
         todoList: [{value:this.state.text,done:false}, ...this.state.todoList],
@@ -135,7 +125,7 @@ export default class App extends React.Component {
     }
   }
 
-  onDoneTodo = (item, index) => {
+  onDoneTodo(item, index) {
     let todoList = this.state.todoList;
     todoList[index] = {...item, done:true}
     this.setState({
